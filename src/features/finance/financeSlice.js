@@ -4,7 +4,7 @@ const initialTransactions = [
   {
     id: 'tx-1',
     title: 'Q2 Software Consulting',
-    amount: 4800,
+    amount: 480000, // Make amounts larger for INR (e.g. 4.8 Lakhs)
     type: 'income',
     category: 'Consulting',
     impactScore: 'Investment',
@@ -13,7 +13,7 @@ const initialTransactions = [
   {
     id: 'tx-2',
     title: 'AWS Cloud Infrastructure',
-    amount: 240,
+    amount: 20000, // 20k INR
     type: 'expense',
     category: 'Software',
     impactScore: 'Essential',
@@ -22,7 +22,7 @@ const initialTransactions = [
   {
     id: 'tx-3',
     title: 'Gourmet Dinner & Drinks',
-    amount: 180,
+    amount: 15000, // 15k INR
     type: 'expense',
     category: 'Lifestyle',
     impactScore: 'Impulse',
@@ -31,7 +31,7 @@ const initialTransactions = [
   {
     id: 'tx-4',
     title: 'Index Fund Dividends',
-    amount: 350,
+    amount: 30000, // 30k INR
     type: 'income',
     category: 'Investment',
     impactScore: 'Investment',
@@ -40,7 +40,7 @@ const initialTransactions = [
   {
     id: 'tx-5',
     title: 'Office Ergonomic Chair',
-    amount: 450,
+    amount: 38000, // 38k INR
     type: 'expense',
     category: 'Workspace',
     impactScore: 'Investment',
@@ -59,6 +59,7 @@ const saveToLocalStorage = (state) => {
         sandboxTransactions: state.sandboxTransactions,
         filterCategory: state.filterCategory,
         searchQuery: state.searchQuery,
+        activeTab: state.activeTab,
       })
     );
   } catch (e) {
@@ -88,6 +89,7 @@ const initialState = persistedState || {
   sandboxTransactions: [],
   filterCategory: 'All',
   searchQuery: '',
+  activeTab: 'Dashboard',
 };
 
 export const financeSlice = createSlice({
@@ -145,6 +147,10 @@ export const financeSlice = createSlice({
       state.searchQuery = action.payload;
       saveToLocalStorage(state);
     },
+    setActiveTab: (state, action) => {
+      state.activeTab = action.payload;
+      saveToLocalStorage(state);
+    },
   },
 });
 
@@ -155,6 +161,7 @@ export const {
   commitSandboxToMain,
   setFilterCategory,
   setSearchQuery,
+  setActiveTab,
 } = financeSlice.actions;
 
 export default financeSlice.reducer;

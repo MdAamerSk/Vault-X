@@ -3,6 +3,7 @@ import { createSelector } from '@reduxjs/toolkit';
 export const selectIsSandboxMode = (state) => state.finance.isSandboxMode;
 export const selectFilterCategory = (state) => state.finance.filterCategory;
 export const selectSearchQuery = (state) => state.finance.searchQuery;
+export const selectActiveTab = (state) => state.finance.activeTab || 'Dashboard';
 
 // 1. Returns either live or sandbox transactions based on mode
 export const selectRawTransactions = (state) =>

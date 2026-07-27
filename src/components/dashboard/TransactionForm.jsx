@@ -89,7 +89,7 @@ const TransactionForm = () => {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="tx-amount" className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">
-                Amount (USD)
+                Amount (INR)
               </label>
               <input
                 id="tx-amount"

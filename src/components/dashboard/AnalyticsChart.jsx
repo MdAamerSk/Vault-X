@@ -21,7 +21,7 @@ const CustomTooltip = ({ active, payload }) => {
           {payload[0].payload.category}
         </p>
         <p className="text-sm font-mono font-black text-cyan-400">
-          ${payload[0].value.toLocaleString()}
+          ₹{payload[0].value.toLocaleString('en-IN')}
         </p>
       </div>
     );
@@ -82,7 +82,7 @@ const AnalyticsChart = () => {
                   axisLine={false}
                   fontSize={10}
                   fontWeight={500}
-                  tickFormatter={(val) => `$${val}`}
+                  tickFormatter={(val) => `₹${val.toLocaleString('en-IN')}`}
                 />
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: '#27272a', opacity: 0.2 }} />
                 <Bar dataKey="amount" radius={[6, 6, 0, 0]} maxBarSize={32}>
