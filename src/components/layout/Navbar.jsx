@@ -13,15 +13,14 @@ const Navbar = () => {
     <nav className="h-16 border-b border-zinc-800 bg-zinc-900/80 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-50">
       {/* Brand Logo */}
       <div className="flex items-center space-x-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 shadow-lg shadow-emerald-500/20">
-          <Database className="h-5 w-5 text-slate-950 font-bold" />
-        </div>
+        <img
+          src="/logo.jpg"
+          alt="VaultX Logo"
+          className="h-10 w-10 rounded-xl object-cover border border-zinc-800 shadow-md shadow-emerald-500/5 select-none"
+        />
         <div className="flex flex-col">
           <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
             VaultX
-          </span>
-          <span className="text-[10px] text-zinc-500 font-medium tracking-widest uppercase -mt-1">
-            Velocity Engine
           </span>
         </div>
       </div>

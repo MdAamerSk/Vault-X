@@ -38,13 +38,11 @@ const App = () => {
           {/* Dashboard Dynamic Title Headers */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <span className={`text-[10px] font-bold tracking-widest uppercase border px-2 py-0.5 rounded transition-all duration-300 ${
-                isSandboxMode 
-                  ? 'text-amber-400 bg-amber-500/10 border-amber-500/20 animate-pulse'
-                  : 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
-              }`}>
-                {isSandboxMode ? 'Sandbox Simulator Active' : 'v1.0.0 Stable'}
-              </span>
+              {isSandboxMode && (
+                <span className="text-[10px] font-bold tracking-widest text-amber-400 uppercase bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded transition-all duration-300 animate-pulse">
+                  Sandbox Simulator Active
+                </span>
+              )}
               
               {activeTab === 'Dashboard' ? (
                 <>

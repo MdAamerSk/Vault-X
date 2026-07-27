@@ -53,9 +53,9 @@ const TransactionForm = () => {
   return (
     <div className="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6 h-full flex flex-col justify-between">
       <div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-start justify-between mb-4">
           <div>
-            <h3 className="text-lg font-bold text-zinc-100 flex items-center space-x-2">
+            <h3 className="text-lg font-bold text-zinc-100 flex flex-wrap items-center gap-2">
               <span>Execute Transaction</span>
               {isSandboxMode && (
                 <span className="flex items-center text-[10px] text-amber-500 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20 font-bold uppercase tracking-wider">
@@ -65,7 +65,7 @@ const TransactionForm = () => {
             </h3>
             <p className="text-xs text-zinc-500">Add transaction into the active ledger</p>
           </div>
-          <PlusCircle className={`h-5 w-5 ${isSandboxMode ? 'text-amber-500' : 'text-emerald-500'}`} />
+          <PlusCircle className={`h-5 w-5 mt-1 shrink-0 ${isSandboxMode ? 'text-amber-500' : 'text-emerald-500'}`} />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
