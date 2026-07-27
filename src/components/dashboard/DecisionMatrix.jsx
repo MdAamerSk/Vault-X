@@ -1,43 +1,14 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectTransactions } from '../../features/finance/financeSelectors';
-import { Target, TrendingUp, AlertTriangle, ShieldCheck } from 'lucide-react';
+import {
+  selectImpactDistribution,
+  selectCapitalEfficiencyScore,
+} from '../../features/finance/financeSelectors';
+import { Target, ShieldAlert, Sparkles, TrendingUp, HelpCircle } from 'lucide-react';
 
 const DecisionMatrix = () => {
-  const transactions = useSelector(selectTransactions);
-
-  // Filter expenses
-  const expenses = transactions.filter((t) => t.type === 'expense');
-  const totalExpenseAmount = expenses.reduce((sum, t) => sum + Number(t.amount || 0), 0);
-
-  // Group expense totals by impact score
-  const essentialTotal = expenses
-    .filter((t) => t.impactScore === 'Essential')
-    .reduce((sum, t) => sum + Number(t.amount || 0), 0);
-
-  const investmentTotal = expenses
-    .filter((t) => t.impactScore === 'Investment')
-    .reduce((sum, t) => sum + Number(t.amount || 0), 0);
-
-  const impulseTotal = expenses
-    .filter((t) => t.impactScore === 'Impulse')
-    .reduce((sum, t) => sum + Number(t.amount || 0), 0);
-
-  // Calculate percentages
-  const getPercentage = (amount) => {
-    if (totalExpenseAmount === 0) return 0;
-    return Math.round((amount / totalExpenseAmount) * 100);
-  };
-
-  const essentialPct = getPercentage(essentialTotal);
-  const investmentPct = getPercentage(investmentTotal);
-  const impulsePct = getPercentage(impulseTotal);
-
-  // Calculate Velocity Score: (Essential + Investment) / Total Expenses
-  // Higher is better. It represents capital allocated to future value/durability vs short-term dopamine.
-  const velocityScore = totalExpenseAmount === 0
-    ? 100
-    : Math.round(((essentialTotal + investmentTotal) / totalExpenseAmount) * 100);
+  const impactDistribution = useSelector(selectImpactDistribution);
+  const efficiencyScore = useSelector(selectCapitalEfficiencyScore);
 
   // Helper to format currency
   const formatVal = (val) => {
@@ -48,116 +19,101 @@ const DecisionMatrix = () => {
     }).format(val);
   };
 
-  // Determine velocity rating title & descriptions
-  let ratingTitle = 'Optimal';
-  let ratingColor = 'text-emerald-400';
-  let ratingBorder = 'border-emerald-500/20';
-  let ratingBg = 'bg-emerald-500/5';
-  
-  if (velocityScore < 50) {
-    ratingTitle = 'Risk Alert';
-    ratingColor = 'text-rose-400';
-    ratingBorder = 'border-rose-500/20';
-    ratingBg = 'bg-rose-500/5';
-  } else if (velocityScore < 75) {
-    ratingTitle = 'Moderate';
-    ratingColor = 'text-amber-400';
-    ratingBorder = 'border-amber-500/20';
-    ratingBg = 'bg-amber-500/5';
+  // Determine advice callout based on efficiency score
+  let adviceTitle = 'Optimal Velocity';
+  let adviceText = 'Your capital allocation is highly optimized for wealth acceleration and future growth.';
+  let adviceColor = 'text-emerald-400';
+  let adviceBg = 'bg-emerald-500/5';
+  let adviceBorder = 'border-emerald-500/20';
+  let AdviceIcon = Sparkles;
+
+  if (efficiencyScore < 50) {
+    adviceTitle = 'High Impulse Burn Detected';
+    adviceText = 'Warning: Capital allocation is heavily skewed toward short-term value leakage. Recommend reducing discretionary expense.';
+    adviceColor = 'text-rose-400';
+    adviceBg = 'bg-rose-500/5';
+    adviceBorder = 'border-rose-500/20';
+    AdviceIcon = ShieldAlert;
+  } else if (efficiencyScore < 75) {
+    adviceTitle = 'Moderate Efficiency';
+    adviceText = 'Fair distribution. You can increase financial velocity by shifting impulse spend into investments.';
+    adviceColor = 'text-amber-400';
+    adviceBg = 'bg-amber-500/5';
+    adviceBorder = 'border-amber-500/20';
+    AdviceIcon = TrendingUp;
   }
 
   return (
     <div className="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6 flex flex-col justify-between h-full">
       <div>
+        {/* Header Section */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-lg font-bold text-zinc-100">Decision Matrix</h3>
-            <p className="text-xs text-zinc-500">Capital quality and velocity assessment</p>
+            <h3 className="text-lg font-bold text-zinc-100 flex items-center space-x-2">
+              <span>Decision Matrix</span>
+            </h3>
+            <p className="text-xs text-zinc-500">Quality analysis of capital allocations</p>
           </div>
           <Target className="h-5 w-5 text-zinc-400" />
         </div>
 
-        {/* Matrix Metrics Breakdown */}
-        <div className="space-y-4 mb-6">
-          {/* Investment */}
-          <div>
-            <div className="flex justify-between items-center text-xs mb-1.5">
-              <div className="flex items-center space-x-2">
-                <span className="h-2 w-2 rounded-full bg-indigo-500"></span>
-                <span className="text-zinc-300 font-semibold">Investment</span>
-                <span className="text-[10px] text-zinc-500">(Future Asset)</span>
-              </div>
-              <span className="text-zinc-400 font-mono font-bold">
-                {formatVal(investmentTotal)} ({investmentPct}%)
-              </span>
-            </div>
-            <div className="h-2 w-full bg-zinc-800/80 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-indigo-500 transition-all duration-500 rounded-full"
-                style={{ width: `${investmentPct}%` }}
-              ></div>
-            </div>
-          </div>
+        {/* Matrix Bars */}
+        <div className="space-y-5 mb-6">
+          {impactDistribution.map((item) => {
+            // Assign badges or border styles based on name
+            let badgeBg = 'bg-zinc-800 text-zinc-400';
+            if (item.name === 'Essential') badgeBg = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+            if (item.name === 'Investment') badgeBg = 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20';
+            if (item.name === 'Impulse') badgeBg = 'bg-orange-500/10 text-orange-400 border-orange-500/20';
 
-          {/* Essential */}
-          <div>
-            <div className="flex justify-between items-center text-xs mb-1.5">
-              <div className="flex items-center space-x-2">
-                <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
-                <span className="text-zinc-300 font-semibold">Essential</span>
-                <span className="text-[10px] text-zinc-500">(Operations/Core)</span>
+            return (
+              <div key={item.name} className="group">
+                <div className="flex justify-between items-center text-xs mb-1.5">
+                  <div className="flex items-center space-x-2">
+                    <span
+                      className="h-2.5 w-2.5 rounded-full"
+                      style={{ backgroundColor: item.color }}
+                    ></span>
+                    <span className="text-zinc-300 font-semibold">{item.name}</span>
+                    <span className="text-[9px] text-zinc-500">
+                      {item.name === 'Essential' && '(Core Needs)'}
+                      {item.name === 'Investment' && '(Future Assets)'}
+                      {item.name === 'Impulse' && '(Short-term dopamine)'}
+                    </span>
+                  </div>
+                  <span className="text-zinc-400 font-mono font-bold">
+                    {formatVal(item.value)} ({item.percentage}%)
+                  </span>
+                </div>
+                {/* Visual Progress Bar */}
+                <div className="h-2 w-full bg-zinc-800/80 rounded-full overflow-hidden relative">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                      width: `${item.percentage}%`,
+                      backgroundColor: item.color,
+                      boxShadow: `0 0 10px ${item.color}40`,
+                    }}
+                  ></div>
+                </div>
               </div>
-              <span className="text-zinc-400 font-mono font-bold">
-                {formatVal(essentialTotal)} ({essentialPct}%)
-              </span>
-            </div>
-            <div className="h-2 w-full bg-zinc-800/80 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-emerald-500 transition-all duration-500 rounded-full"
-                style={{ width: `${essentialPct}%` }}
-              ></div>
-            </div>
-          </div>
-
-          {/* Impulse */}
-          <div>
-            <div className="flex justify-between items-center text-xs mb-1.5">
-              <div className="flex items-center space-x-2">
-                <span className="h-2 w-2 rounded-full bg-orange-500 animate-pulse"></span>
-                <span className="text-zinc-300 font-semibold">Impulse</span>
-                <span className="text-[10px] text-zinc-500">(Short-term/Dopamine)</span>
-              </div>
-              <span className="text-zinc-400 font-mono font-bold">
-                {formatVal(impulseTotal)} ({impulsePct}%)
-              </span>
-            </div>
-            <div className="h-2 w-full bg-zinc-800/80 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-orange-500 transition-all duration-500 rounded-full"
-                style={{ width: `${impulsePct}%` }}
-              ></div>
-            </div>
-          </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Decision Velocity Rating Indicator */}
-      <div className={`rounded-xl border ${ratingBorder} ${ratingBg} p-4 flex items-center justify-between`}>
-        <div className="space-y-1">
-          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block">
-            Velocity Index Rating
-          </span>
-          <div className="flex items-baseline space-x-2">
-            <span className={`text-xl font-bold tracking-tight ${ratingColor}`}>
-              {ratingTitle}
-            </span>
-            <span className="text-xs text-zinc-500">({velocityScore}% quality capital)</span>
-          </div>
+      {/* Dynamic Advice Callout Card */}
+      <div className={`rounded-xl border ${adviceBorder} ${adviceBg} p-4 flex items-start space-x-3`}>
+        <div className={`p-1.5 rounded-lg bg-zinc-950 shrink-0`}>
+          <AdviceIcon className={`h-4 w-4 ${adviceColor}`} />
         </div>
-        <div className="flex items-center justify-center h-12 w-12 rounded-full border border-zinc-800 bg-zinc-950 shadow-inner relative">
-          <span className={`text-sm font-black font-mono ${ratingColor}`}>
-            {velocityScore}%
+        <div className="space-y-1">
+          <span className={`text-xs font-extrabold uppercase tracking-wide block ${adviceColor}`}>
+            {adviceTitle}
           </span>
+          <p className="text-[11px] text-zinc-400 leading-normal">
+            {adviceText}
+          </p>
         </div>
       </div>
     </div>
