@@ -48,7 +48,41 @@ const initialTransactions = [
   },
 ];
 
-const initialState = {
+// Helper to save state to LocalStorage
+const saveToLocalStorage = (state) => {
+  try {
+    localStorage.setItem(
+      'vaultx_finance_state',
+      JSON.stringify({
+        transactions: state.transactions,
+        isSandboxMode: state.isSandboxMode,
+        sandboxTransactions: state.sandboxTransactions,
+        filterCategory: state.filterCategory,
+        searchQuery: state.searchQuery,
+      })
+    );
+  } catch (e) {
+    console.error('Failed to save to localStorage', e);
+  }
+};
+
+// Helper to load state from LocalStorage
+const loadFromLocalStorage = () => {
+  try {
+    const serializedState = localStorage.getItem('vaultx_finance_state');
+    if (serializedState === null) {
+      return undefined;
+    }
+    return JSON.parse(serializedState);
+  } catch (e) {
+    console.error('Failed to load from localStorage', e);
+    return undefined;
+  }
+};
+
+const persistedState = loadFromLocalStorage();
+
+const initialState = persistedState || {
   transactions: initialTransactions,
   isSandboxMode: false,
   sandboxTransactions: [],
@@ -73,6 +107,7 @@ export const financeSlice = createSlice({
       } else {
         state.transactions.unshift(newTransaction);
       }
+      saveToLocalStorage(state);
     },
     deleteTransaction: (state, action) => {
       const targetId = action.payload;
@@ -85,6 +120,7 @@ export const financeSlice = createSlice({
           (t) => t.id !== targetId
         );
       }
+      saveToLocalStorage(state);
     },
     toggleSandboxMode: (state) => {
       state.isSandboxMode = !state.isSandboxMode;
@@ -92,18 +128,22 @@ export const financeSlice = createSlice({
         // When entering Sandbox Mode, clone the live ledger
         state.sandboxTransactions = JSON.parse(JSON.stringify(state.transactions));
       }
+      saveToLocalStorage(state);
     },
     commitSandboxToMain: (state) => {
       if (state.isSandboxMode) {
         state.transactions = JSON.parse(JSON.stringify(state.sandboxTransactions));
         state.isSandboxMode = false;
       }
+      saveToLocalStorage(state);
     },
     setFilterCategory: (state, action) => {
       state.filterCategory = action.payload;
+      saveToLocalStorage(state);
     },
     setSearchQuery: (state, action) => {
       state.searchQuery = action.payload;
+      saveToLocalStorage(state);
     },
   },
 });

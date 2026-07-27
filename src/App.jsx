@@ -5,6 +5,7 @@ import MetricCards from './components/dashboard/MetricCards';
 import DecisionMatrix from './components/dashboard/DecisionMatrix';
 import TransactionForm from './components/dashboard/TransactionForm';
 import TransactionList from './components/dashboard/TransactionList';
+import AnalyticsChart from './components/dashboard/AnalyticsChart';
 
 const App = () => {
   return (
@@ -18,7 +19,7 @@ const App = () => {
         <Sidebar />
 
         {/* Central Dashboard Space */}
-        <main className="flex-1 p-6 lg:p-8 space-y-8 bg-linear-to-b from-zinc-900/30 to-zinc-950 overflow-y-auto max-h-[calc(100vh-4rem)]">
+        <main className="flex-1 p-6 lg:p-8 space-y-8 bg-gradient-to-b from-zinc-900/30 to-zinc-950 overflow-y-auto max-h-[calc(100vh-4rem)]">
           {/* Dashboard Welcome Header */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
@@ -35,7 +36,7 @@ const App = () => {
             
             <div className="flex items-center space-x-2 text-xs text-zinc-500 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 font-mono">
               <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
-              <span>Sync status: Live Ledger synchronized</span>
+              <span>Sync status: LocalStorage Active</span>
             </div>
           </div>
 
@@ -44,22 +45,27 @@ const App = () => {
             <MetricCards />
           </section>
 
-          {/* Row 2: Interactive Grid */}
-          <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-            {/* Form Column */}
+          {/* Row 2: Interactive Grid (Forms & Matrix & Bar Charts) */}
+          <section className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-stretch">
+            {/* Form Column (1/4 width) */}
             <div className="lg:col-span-1">
               <TransactionForm />
             </div>
 
-            {/* Matrix & Analytics Column */}
+            {/* Matrix Column (1/4 width) */}
             <div className="lg:col-span-1">
               <DecisionMatrix />
             </div>
 
-            {/* Ledger List Column */}
-            <div className="lg:col-span-1">
-              <TransactionList />
+            {/* Bar Charts Column (2/4 width) */}
+            <div className="lg:col-span-2">
+              <AnalyticsChart />
             </div>
+          </section>
+
+          {/* Row 3: Full-width Transaction Ledger list */}
+          <section className="w-full">
+            <TransactionList />
           </section>
         </main>
       </div>

@@ -12,6 +12,7 @@ import {
   selectIsSandboxMode,
 } from '../../features/finance/financeSelectors';
 import { Search, Trash2, SlidersHorizontal, Info, Inbox } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const TransactionList = () => {
   const dispatch = useDispatch();
@@ -98,62 +99,70 @@ const TransactionList = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-900 text-xs">
-                {transactions.map((tx) => {
-                  // Setup impact score class color
-                  let impactColor = '';
-                  if (tx.impactScore === 'Investment') {
-                    impactColor = 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20';
-                  } else if (tx.impactScore === 'Essential') {
-                    impactColor = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
-                  } else {
-                    impactColor = 'text-orange-400 bg-orange-500/10 border-orange-500/20';
-                  }
+                <AnimatePresence initial={false}>
+                  {transactions.map((tx) => {
+                    // Setup impact score class color
+                    let impactColor = '';
+                    if (tx.impactScore === 'Investment') {
+                      impactColor = 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20';
+                    } else if (tx.impactScore === 'Essential') {
+                      impactColor = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+                    } else {
+                      impactColor = 'text-orange-400 bg-orange-500/10 border-orange-500/20';
+                    }
 
-                  const isIncome = tx.type === 'income';
+                    const isIncome = tx.type === 'income';
 
-                  return (
-                    <tr
-                      key={tx.id}
-                      className="hover:bg-zinc-900/30 transition-colors group"
-                    >
-                      {/* Title & category */}
-                      <td className="py-3 pl-2">
-                        <div className="font-semibold text-zinc-200">{tx.title}</div>
-                        <div className="text-[10px] text-zinc-500 mt-0.5">{tx.category}</div>
-                      </td>
+                    return (
+                      <motion.tr
+                        key={tx.id}
+                        layout
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, x: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="hover:bg-zinc-900/30 transition-colors group"
+                      >
+                        {/* Title & category */}
+                        <td className="py-3 pl-2">
+                          <div className="font-semibold text-zinc-200">{tx.title}</div>
+                          <div className="text-[10px] text-zinc-500 mt-0.5">{tx.category}</div>
+                        </td>
 
-                      {/* Date */}
-                      <td className="py-3 text-zinc-400 font-mono">{tx.date}</td>
+                        {/* Date */}
+                        <td className="py-3 text-zinc-400 font-mono">{tx.date}</td>
 
-                      {/* Impact Score */}
-                      <td className="py-3">
-                        <span className={`inline-flex px-2 py-0.5 rounded border text-[9px] font-bold uppercase tracking-wider ${impactColor}`}>
-                          {tx.impactScore}
-                        </span>
-                      </td>
+                        {/* Impact Score */}
+                        <td className="py-3">
+                          <span className={`inline-flex px-2 py-0.5 rounded border text-[9px] font-bold uppercase tracking-wider ${impactColor}`}>
+                            {tx.impactScore}
+                          </span>
+                        </td>
 
-                      {/* Amount */}
-                      <td className="py-3 text-right font-mono font-bold">
-                        <span className={isIncome ? 'text-emerald-400' : 'text-zinc-200'}>
-                          {isIncome ? '+' : '-'}
-                          {formatCurrency(tx.amount)}
-                        </span>
-                      </td>
+                        {/* Amount */}
+                        <td className="py-3 text-right font-mono font-bold">
+                          <span className={isIncome ? 'text-emerald-400' : 'text-zinc-200'}>
+                            {isIncome ? '+' : '-'}
+                            {formatCurrency(tx.amount)}
+                          </span>
+                        </td>
 
-                      {/* Action */}
-                      <td className="py-3 text-center pr-2">
-                        <button
-                          onClick={() => handleDelete(tx.id)}
-                          className="p-1 rounded bg-transparent hover:bg-rose-500/10 text-zinc-600 hover:text-rose-400 border border-transparent hover:border-rose-500/20 transition-all duration-200 opacity-50 group-hover:opacity-100 cursor-pointer"
-                          title="Delete transaction"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
+                        {/* Action */}
+                        <td className="py-3 text-center pr-2">
+                          <button
+                            onClick={() => handleDelete(tx.id)}
+                            className="p-1 rounded bg-transparent hover:bg-rose-500/10 text-zinc-600 hover:text-rose-400 border border-transparent hover:border-rose-500/20 transition-all duration-200 opacity-50 group-hover:opacity-100 cursor-pointer"
+                            title="Delete transaction"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </td>
+                      </motion.tr>
+                    );
+                  })}
+                </AnimatePresence>
               </tbody>
+
             </table>
           ) : (
             <div className="flex flex-col items-center justify-center py-12 text-zinc-600">

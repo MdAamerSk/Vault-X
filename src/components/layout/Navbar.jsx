@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleSandboxMode, commitSandboxToMain } from '../../features/finance/financeSlice';
 import { selectIsSandboxMode } from '../../features/finance/financeSelectors';
 import { FlaskConical, Database, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -29,13 +30,17 @@ const Navbar = () => {
       <div className="flex items-center space-x-4">
         {/* Mode Indicator Badge */}
         {isSandboxMode ? (
-          <div className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold shadow-[0_0_15px_rgba(245,158,11,0.1)]">
+          <motion.div
+            animate={{ scale: [1, 1.03, 1], opacity: [0.85, 1, 0.85] }}
+            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+            className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold shadow-[0_0_15px_rgba(245,158,11,0.15)]"
+          >
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
             </span>
             <span className="tracking-wide uppercase">Sandbox Mode</span>
-          </div>
+          </motion.div>
         ) : (
           <div className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold shadow-[0_0_15px_rgba(16,185,129,0.1)]">
             <span className="relative flex h-2 w-2">

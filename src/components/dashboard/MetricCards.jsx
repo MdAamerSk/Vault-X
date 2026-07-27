@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { motion } from 'framer-motion';
 import {
   selectTotalIncome,
   selectTotalExpense,
@@ -93,8 +94,11 @@ const MetricCards = () => {
       {metrics.map((metric) => {
         const Icon = metric.icon;
         return (
-          <div
+          <motion.div
             key={metric.name}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
             className={`rounded-xl bg-zinc-900/40 border p-4 transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden flex flex-col justify-between ${metric.borderColorClass} ${metric.glowColor}`}
           >
             {/* Ambient card background glow */}
@@ -141,7 +145,7 @@ const MetricCards = () => {
             <div className="mt-3 text-[10px] text-zinc-500 leading-tight">
               {metric.subtext}
             </div>
-          </div>
+          </motion.div>
         );
       })}
     </div>
